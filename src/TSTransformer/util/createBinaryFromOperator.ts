@@ -13,7 +13,9 @@ const OPERATOR_MAP = new Map<ts.SyntaxKind, luau.BinaryOperator>([
 	[ts.SyntaxKind.LessThanEqualsToken, "<="],
 	[ts.SyntaxKind.GreaterThanEqualsToken, ">="],
 	[ts.SyntaxKind.EqualsEqualsEqualsToken, "=="],
+	[ts.SyntaxKind.EqualsEqualsToken, "=="],
 	[ts.SyntaxKind.ExclamationEqualsEqualsToken, "~="],
+	[ts.SyntaxKind.ExclamationEqualsToken, "~="],
 
 	// math
 	[ts.SyntaxKind.MinusToken, "-"],

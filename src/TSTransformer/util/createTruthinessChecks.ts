@@ -1,24 +1,25 @@
 import luau from "@roblox-ts/luau-ast";
-import { warnings } from "Shared/diagnostics";
 import { TransformState } from "TSTransformer";
-import { DiagnosticService } from "TSTransformer/classes/DiagnosticService";
-import { binaryExpressionChain } from "TSTransformer/util/expressionChain";
-import { isEmptyStringType, isNaNType, isNumberLiteralType, isPossiblyType } from "TSTransformer/util/types";
 import ts from "typescript";
 
+// Luau-style TS: assume truthiness was intended for Luau, so no truthiness checks required
 export function willCreateTruthinessChecks(type: ts.Type) {
-	return (
-		isPossiblyType(type, isNumberLiteralType(0)) ||
-		isPossiblyType(type, isNaNType) ||
-		isPossiblyType(type, isEmptyStringType)
-	);
+	return false;
+	// return (
+	// 	isPossiblyType(type, isNumberLiteralType(0)) ||
+	// 	isPossiblyType(type, isNaNType) ||
+	// 	isPossiblyType(type, isEmptyStringType)
+	// );
 }
 
 export function createTruthinessChecks(state: TransformState, exp: luau.Expression, node: ts.Expression) {
+	return exp;
+	/*
 	const type = state.getType(node);
 	const isAssignableToZero = isPossiblyType(type, isNumberLiteralType(0));
 	const isAssignableToNaN = isPossiblyType(type, isNaNType);
 	const isAssignableToEmptyString = isPossiblyType(type, isEmptyStringType);
+
 
 	if (isAssignableToZero || isAssignableToNaN || isAssignableToEmptyString) {
 		exp = state.pushToVarIfComplex(exp, "value");
@@ -53,4 +54,5 @@ export function createTruthinessChecks(state: TransformState, exp: luau.Expressi
 	}
 
 	return binaryExpressionChain(checks, "and");
+	*/
 }

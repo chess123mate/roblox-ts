@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createBinaryFromOperator = createBinaryFromOperator;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const assert_1 = require("../../Shared/util/assert");
+const assert_1 = require("../../shared/util/assert");
 const getKindName_1 = require("./getKindName");
 const types_1 = require("./types");
 const wrapExpressionStatement_1 = require("./wrapExpressionStatement");
@@ -16,7 +16,9 @@ const OPERATOR_MAP = new Map([
     [typescript_1.default.SyntaxKind.LessThanEqualsToken, "<="],
     [typescript_1.default.SyntaxKind.GreaterThanEqualsToken, ">="],
     [typescript_1.default.SyntaxKind.EqualsEqualsEqualsToken, "=="],
+    [typescript_1.default.SyntaxKind.EqualsEqualsToken, "=="],
     [typescript_1.default.SyntaxKind.ExclamationEqualsEqualsToken, "~="],
+    [typescript_1.default.SyntaxKind.ExclamationEqualsToken, "~="],
     [typescript_1.default.SyntaxKind.MinusToken, "-"],
     [typescript_1.default.SyntaxKind.AsteriskToken, "*"],
     [typescript_1.default.SyntaxKind.SlashToken, "/"],

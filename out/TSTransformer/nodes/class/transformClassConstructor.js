@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformImplicitClassConstructor = transformImplicitClassConstructor;
 exports.transformClassConstructor = transformClassConstructor;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const diagnostics_1 = require("../../../Shared/diagnostics");
+const diagnostics_1 = require("../../../shared/diagnostics");
 const DiagnosticService_1 = require("../../classes/DiagnosticService");
 const transformExpression_1 = require("../expressions/transformExpression");
 const transformIdentifier_1 = require("../expressions/transformIdentifier");

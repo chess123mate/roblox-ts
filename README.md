@@ -1,3 +1,18 @@
+### Changes compared to main fork
+
+- Allow `==` and `!=` (they are compiled the same as `===` and `!==`)
+- Disallow truthiness checks (you can now say `if (value)` without TS-specific checks being applied)
+
+To take advantage of the changes, you will want these rules in your `.eslintrc` file:
+```json
+{
+	"rules": {
+		"eqeqeq": "off",
+		"roblox-ts/lua-truthiness": "off",
+	}
+}
+```
+
 <div align="center"><img width=25% src="https://i.imgur.com/yCjHmng.png"></div>
 <h1 align="center"><a href="https://roblox-ts.com">roblox-ts</a></h1>
 <div align="center">A TypeScript-to-Luau Compiler for Roblox</div>

@@ -97,14 +97,6 @@ function transformBinaryExpression(state, node) {
     const operatorKind = node.operatorToken.kind;
     (0, validateNotAny_1.validateNotAnyType)(state, node.left);
     (0, validateNotAny_1.validateNotAnyType)(state, node.right);
-    if (operatorKind === typescript_1.default.SyntaxKind.EqualsEqualsToken) {
-        DiagnosticService_1.DiagnosticService.addDiagnostic(diagnostics_1.errors.noEqualsEquals(node));
-        return luau_ast_1.default.none();
-    }
-    else if (operatorKind === typescript_1.default.SyntaxKind.ExclamationEqualsToken) {
-        DiagnosticService_1.DiagnosticService.addDiagnostic(diagnostics_1.errors.noExclamationEquals(node));
-        return luau_ast_1.default.none();
-    }
     if (operatorKind === typescript_1.default.SyntaxKind.AmpersandAmpersandToken ||
         operatorKind === typescript_1.default.SyntaxKind.BarBarToken ||
         operatorKind === typescript_1.default.SyntaxKind.QuestionQuestionToken) {

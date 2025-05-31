@@ -116,6 +116,7 @@ export function transformBinaryExpression(state: TransformState, node: ts.Binary
 	validateNotAnyType(state, node.left);
 	validateNotAnyType(state, node.right);
 
+	/* Luau-style TS disables the ban of `==` (we pretend that `==` and `===` mean the same thing)
 	// banned
 	if (operatorKind === ts.SyntaxKind.EqualsEqualsToken) {
 		DiagnosticService.addDiagnostic(errors.noEqualsEquals(node));
@@ -124,6 +125,7 @@ export function transformBinaryExpression(state: TransformState, node: ts.Binary
 		DiagnosticService.addDiagnostic(errors.noExclamationEquals(node));
 		return luau.none();
 	}
+	*/
 
 	// logical
 	if (

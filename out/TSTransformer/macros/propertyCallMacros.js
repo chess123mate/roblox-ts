@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PROPERTY_CALL_MACROS = void 0;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const assert_1 = require("../../Shared/util/assert");
+const assert_1 = require("../../shared/util/assert");
 const convertToIndexableExpression_1 = require("../util/convertToIndexableExpression");
 const isUsedAsStatement_1 = require("../util/isUsedAsStatement");
 const offset_1 = require("../util/offset");

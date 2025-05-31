@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkVariableHoist = checkVariableHoist;
-const getOrSetDefault_1 = require("../../Shared/util/getOrSetDefault");
+const getOrSetDefault_1 = require("../../shared/util/getOrSetDefault");
 const traversal_1 = require("./traversal");
 const typescript_1 = __importDefault(require("typescript"));
 function checkVariableHoist(state, node, symbol) {
