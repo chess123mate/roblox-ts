@@ -234,13 +234,12 @@ export function tryHandleVarArgsIndexableExpression(
 	node: ts.ElementAccessExpression,
 	elementIndexExpr: luau.Expression,
 ) {
-	const expr = node.expression;
-	const varArgs = state.getOptimizableVarArgsData(expr);
+	const varArgs = state.getOptimizableVarArgsData(node.expression);
 	if (!varArgs) return;
 	/* Transformations:
 	args[0] -> (...)
-	args[1] -> select(2, ...)
-	args[expr] -> select(expr + 1, ...)
+	args[1] -> (select(2, ...))
+	args[expr] -> (select(expr + 1, ...))
 
 	(Theoretically this function could be called for cases like `args[0] = ` or `args["pop"]()`, but these aren't optimizable, so varArgs would be undefined)
 	*/
@@ -253,7 +252,9 @@ export function tryHandleVarArgsIndexableExpression(
 	} else {
 		argNumExpr = luau.binary(convertToIndexableExpression(elementIndexExpr), "+", oneLiteral);
 	}
-	return luau.call(luau.globals.select, [argNumExpr, varArgsLiteral]);
+	return luau.create(luau.SyntaxKind.ParenthesizedExpression, {
+		expression: luau.call(luau.globals.select, [argNumExpr, varArgsLiteral]),
+	});
 }
 
 export function tryHandleVarArgsArraySpread(state: TransformState, node: ts.SpreadElement) {
