@@ -35,7 +35,7 @@ exports.tryHandleVarArgsArraySpread = tryHandleVarArgsArraySpread;
 exports.varArgsForOfGetFirstStatementValue = varArgsForOfGetFirstStatementValue;
 exports.transformVarArgsForOfResult = transformVarArgsForOfResult;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const convertToIndexableExpression_1 = require("./convertToIndexableExpression");
+const offset_1 = require("./offset");
 const traversal_1 = require("./traversal");
 const types_1 = require("./types");
 const typescript_1 = __importStar(require("typescript"));
@@ -218,7 +218,7 @@ function tryHandleVarArgsCallMacro(state, callExpr, macroSymbol) {
         return (_a = varArgs.lengthId) !== null && _a !== void 0 ? _a : exports.selectLengthCall;
     }
 }
-function tryHandleVarArgsIndexableExpression(state, node, elementIndexExpr) {
+function tryHandleVarArgsIndexableExpression(state, node, indexExpr) {
     const varArgs = state.getOptimizableVarArgsData(node.expression);
     if (!varArgs)
         return;
@@ -231,7 +231,7 @@ function tryHandleVarArgsIndexableExpression(state, node, elementIndexExpr) {
         argNumExpr = luau_ast_1.default.number(num + 1);
     }
     else {
-        argNumExpr = luau_ast_1.default.binary((0, convertToIndexableExpression_1.convertToIndexableExpression)(elementIndexExpr), "+", oneLiteral);
+        argNumExpr = (0, offset_1.offset)(indexExpr, 1);
     }
     return luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.ParenthesizedExpression, {
         expression: luau_ast_1.default.call(luau_ast_1.default.globals.select, [argNumExpr, varArgsLiteral]),

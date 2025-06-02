@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformParameters = transformParameters;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const diagnostics_1 = require("../../shared/diagnostics");
+const diagnostics_1 = require("../../Shared/diagnostics");
 const DiagnosticService_1 = require("../classes/DiagnosticService");
 const transformArrayBindingPattern_1 = require("./binding/transformArrayBindingPattern");
 const transformObjectBindingPattern_1 = require("./binding/transformObjectBindingPattern");
