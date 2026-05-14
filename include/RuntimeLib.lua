@@ -99,7 +99,7 @@ function TS.import(context, module, ...)
 		registeredLibraries[module] = true -- register as already loaded for subsequent calls
 	end
 
-	local data = require(module)
+	local data = require(module :: Instance)
 
 	if currentlyLoading[context] == module then -- Thread-safe cleanup!
 		currentlyLoading[context] = nil
