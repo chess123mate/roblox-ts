@@ -218,23 +218,23 @@ function tryHandleVarArgsCallMacro(state, callExpr, macroSymbol) {
         return (_a = varArgs.lengthId) !== null && _a !== void 0 ? _a : exports.selectLengthCall;
     }
 }
-function tryHandleVarArgsIndexableExpression(state, node, indexExpr) {
+function tryHandleVarArgsIndexableExpression(state, node, index) {
     const varArgs = state.getOptimizableVarArgsData(node.expression);
     if (!varArgs)
         return;
     const argExpr = node.argumentExpression;
-    let argNumExpr;
+    let argsIndex;
     if (typescript_1.default.isNumericLiteral(argExpr)) {
         const num = state.typeChecker.getTypeAtLocation(argExpr).value;
         if (num === 0)
             return selectArg0;
-        argNumExpr = luau_ast_1.default.number(num + 1);
+        argsIndex = luau_ast_1.default.number(num + 1);
     }
     else {
-        argNumExpr = (0, offset_1.offset)(indexExpr, 1);
+        argsIndex = (0, offset_1.offset)(index, 1);
     }
     return luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.ParenthesizedExpression, {
-        expression: luau_ast_1.default.call(luau_ast_1.default.globals.select, [argNumExpr, varArgsLiteral]),
+        expression: luau_ast_1.default.call(luau_ast_1.default.globals.select, [argsIndex, varArgsLiteral]),
     });
 }
 function tryHandleVarArgsArraySpread(state, node) {

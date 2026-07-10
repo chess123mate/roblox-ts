@@ -2,6 +2,7 @@
 
 - Allow `==` and `!=` (they are compiled the same as `===` and `!==`)
 - Disallow truthiness checks (you can now say `if (value)` without TS-specific checks being applied)
+- Allow `any` (just don't forget that without knowing the type, TS cannot do type-specific compilation). There were some cases (with generics) where `any` was inferred and the code was valid, but the compiler would refuse to operate.
 
 To take advantage of the changes, you will want these rules in your `.eslintrc` file:
 ```json
