@@ -469,7 +469,7 @@ export function transformForOfRangeMacro(
 			id,
 			start,
 			end,
-			step: step === undefined || luau.isNumberLiteral(step) ? step : luau.binary(step, "or", luau.number(1)),
+			step,
 			statements,
 		}),
 	);

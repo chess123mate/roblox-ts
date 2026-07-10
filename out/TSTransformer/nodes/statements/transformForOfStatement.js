@@ -351,7 +351,7 @@ function transformForOfRangeMacro(state, node, macroCall) {
         id,
         start,
         end,
-        step: step === undefined || luau_ast_1.default.isNumberLiteral(step) ? step : luau_ast_1.default.binary(step, "or", luau_ast_1.default.number(1)),
+        step,
         statements,
     }));
     return result;
