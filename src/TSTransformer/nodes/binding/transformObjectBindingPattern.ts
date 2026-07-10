@@ -25,6 +25,7 @@ export function transformObjectBindingPattern(
 		const prop = element.propertyName;
 		if (ts.isIdentifier(name)) {
 			const value = objectAccessor(state, parentId, state.getType(bindingPattern), prop ?? name);
+
 			const id = transformVariable(state, name, value);
 			if (element.initializer) {
 				state.prereq(transformInitializer(state, id, element.initializer));
@@ -34,7 +35,7 @@ export function transformObjectBindingPattern(
 			// in that case, prop is guaranteed to exist
 			assert(prop);
 			const value = objectAccessor(state, parentId, state.getType(bindingPattern), prop);
-			const id = state.pushToVar(value, "binding");
+			const id = state.pushToVarIfNonId(value, "binding");
 			if (element.initializer) {
 				state.prereq(transformInitializer(state, id, element.initializer));
 			}

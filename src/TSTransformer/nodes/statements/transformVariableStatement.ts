@@ -70,6 +70,7 @@ function transformOptimizedArrayBindingPattern(
 						DiagnosticService.addDiagnostic(errors.noSpreadDestructuring(element));
 						return;
 					}
+
 					if (ts.isIdentifier(element.name)) {
 						validateIdentifier(state, element.name);
 						const id = transformIdentifierDefined(state, element.name);
@@ -149,7 +150,7 @@ export function transformVariableDeclaration(
 				luau.list.pushList(
 					statements,
 					state.capturePrereqs(() =>
-						transformArrayBindingPattern(state, name, state.pushToVar(value, "binding")),
+						transformArrayBindingPattern(state, name, state.pushToVarIfNonId(value!, "binding")),
 					),
 				);
 			}
@@ -157,7 +158,7 @@ export function transformVariableDeclaration(
 			luau.list.pushList(
 				statements,
 				state.capturePrereqs(() =>
-					transformObjectBindingPattern(state, name, state.pushToVar(value, "binding")),
+					transformObjectBindingPattern(state, name, state.pushToVarIfNonId(value!, "binding")),
 				),
 			);
 		}

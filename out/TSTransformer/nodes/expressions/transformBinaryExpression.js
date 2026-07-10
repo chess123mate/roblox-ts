@@ -125,7 +125,7 @@ function transformBinaryExpression(state, node) {
                 transformOptimizedArrayAssignmentPattern(state, node.left, rightExp.members);
                 return luau_ast_1.default.none();
             }
-            const parentId = state.pushToVar(rightExp, "binding");
+            const parentId = state.pushToVarIfNonId(rightExp, "binding");
             (0, transformArrayAssignmentPattern_1.transformArrayAssignmentPattern)(state, node.left, parentId);
             return parentId;
         }
@@ -137,7 +137,7 @@ function transformBinaryExpression(state, node) {
                 }
                 return rightExp;
             }
-            const parentId = state.pushToVar(rightExp, "binding");
+            const parentId = state.pushToVarIfNonId(rightExp, "binding");
             (0, transformObjectAssignmentPattern_1.transformObjectAssignmentPattern)(state, node.left, parentId);
             return parentId;
         }

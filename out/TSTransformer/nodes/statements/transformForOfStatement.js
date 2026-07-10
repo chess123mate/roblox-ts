@@ -39,7 +39,7 @@ function makeForLoopBuilder(callback) {
 function transformForInitializerExpressionDirect(state, initializer, initializers, value) {
     if (typescript_1.default.isArrayLiteralExpression(initializer)) {
         const [parentId, prereqs] = state.capture(() => {
-            const parentId = state.pushToVar(value, "binding");
+            const parentId = state.pushToVarIfNonId(value, "binding");
             (0, transformArrayAssignmentPattern_1.transformArrayAssignmentPattern)(state, initializer, parentId);
             return parentId;
         });
@@ -48,7 +48,7 @@ function transformForInitializerExpressionDirect(state, initializer, initializer
     }
     else if (typescript_1.default.isObjectLiteralExpression(initializer)) {
         const [parentId, prereqs] = state.capture(() => {
-            const parentId = state.pushToVar(value, "binding");
+            const parentId = state.pushToVarIfNonId(value, "binding");
             (0, transformObjectAssignmentPattern_1.transformObjectAssignmentPattern)(state, initializer, parentId);
             return parentId;
         });

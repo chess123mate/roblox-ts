@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.wrapExpressionStatement = wrapExpressionStatement;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
 function wrapExpressionStatement(node) {
-    if (luau_ast_1.default.isTemporaryIdentifier(node) || luau_ast_1.default.isNone(node)) {
+    if (luau_ast_1.default.isAnyIdentifier(node) || luau_ast_1.default.isNone(node)) {
         return luau_ast_1.default.list.make();
     }
     else if (luau_ast_1.default.isCall(node)) {

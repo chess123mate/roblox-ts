@@ -18,6 +18,7 @@ function isTupleReturningCall(state, tsExpression, luaExpression) {
         (0, types_1.isLuaTupleType)(state)(state.typeChecker.getTypeAtLocation((0, traversal_1.skipDownwards)(tsExpression))));
 }
 function isTupleMacro(state, expression) {
+    expression = (0, traversal_1.skipDownwards)(expression);
     if (typescript_1.default.isCallExpression(expression)) {
         const symbol = (0, types_1.getFirstDefinedSymbol)(state, state.getType(expression.expression));
         if (symbol && symbol === state.services.macroManager.getSymbolOrThrow(TSTransformer_1.SYMBOL_NAMES.$tuple)) {
@@ -29,8 +30,9 @@ function isTupleMacro(state, expression) {
 function transformReturnStatementInner(state, returnExp) {
     const result = luau_ast_1.default.list.make();
     let expression;
-    if (typescript_1.default.isCallExpression(returnExp) && isTupleMacro(state, returnExp)) {
-        const [args, prereqs] = state.capture(() => (0, ensureTransformOrder_1.ensureTransformOrder)(state, returnExp.arguments));
+    if (isTupleMacro(state, returnExp)) {
+        const callExpr = (0, traversal_1.skipDownwards)(returnExp);
+        const [args, prereqs] = state.capture(() => (0, ensureTransformOrder_1.ensureTransformOrder)(state, callExpr.arguments));
         luau_ast_1.default.list.pushList(result, prereqs);
         expression = luau_ast_1.default.list.make(...args);
     }
@@ -41,7 +43,6 @@ function transformReturnStatementInner(state, returnExp) {
                 expression = expression.members;
             }
             else {
-                expression = luau_ast_1.default.call(luau_ast_1.default.globals.unpack, [expression]);
             }
         }
     }

@@ -7,7 +7,6 @@ local NODE_MODULES = "node_modules"
 local DEFAULT_SCOPE = "@rbxts"
 
 local TS = {}
-
 TS.Promise = Promise
 
 local function isPlugin(context)
@@ -257,4 +256,5 @@ function TS.generator(callback)
 	}
 end
 
+_G.__TS = TS
 return TS

@@ -65,7 +65,7 @@ function transformForInitializerExpressionDirect(
 ) {
 	if (ts.isArrayLiteralExpression(initializer)) {
 		const [parentId, prereqs] = state.capture(() => {
-			const parentId = state.pushToVar(value, "binding");
+			const parentId = state.pushToVarIfNonId(value, "binding");
 			transformArrayAssignmentPattern(state, initializer, parentId);
 			return parentId;
 		});
@@ -73,7 +73,7 @@ function transformForInitializerExpressionDirect(
 		return parentId;
 	} else if (ts.isObjectLiteralExpression(initializer)) {
 		const [parentId, prereqs] = state.capture(() => {
-			const parentId = state.pushToVar(value, "binding");
+			const parentId = state.pushToVarIfNonId(value, "binding");
 			transformObjectAssignmentPattern(state, initializer, parentId);
 			return parentId;
 		});

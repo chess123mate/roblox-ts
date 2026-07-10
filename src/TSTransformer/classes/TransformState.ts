@@ -208,7 +208,8 @@ export class TransformState {
 				const serviceName = this.runtimeLibRbxPath[0];
 				assert(serviceName);
 
-				let expression: luau.IndexableExpression = createGetService(serviceName);
+				let expression: luau.Expression = createGetService(serviceName);
+
 				// iterate through the rest of the path
 				// for each instance in the path, create a new WaitForChild call to be added on to the end of the final expression
 				for (let i = 1; i < this.runtimeLibRbxPath.length; i++) {
@@ -217,10 +218,26 @@ export class TransformState {
 						name: "WaitForChild",
 						args: luau.list.make(luau.string(this.runtimeLibRbxPath[i])),
 					});
+					// Alternative if we knew for sure WaitForChild wasn't necessary (may be necessary if being used by ReplicatedFirst):
+					// expression = luau.create(luau.SyntaxKind.ComputedIndexExpression, {
+					// 	expression,
+					// 	index: luau.string(this.runtimeLibRbxPath[i]),
+					// });
 				}
 
-				// nest the chain of `WaitForChild`s inside a require call
+				// nest the above chain inside a require call
 				expression = luau.call(luau.globals.require, [expression]);
+
+				// Old expression: local TS = require(...)
+				// New expression: local TS = _G.__TS or require(...) and the runtime lib will export itself to _G
+				expression = luau.binary(
+					luau.create(luau.SyntaxKind.ComputedIndexExpression, {
+						expression: luau.globals._G,
+						index: luau.create(luau.SyntaxKind.StringLiteral, { value: "__TS" }),
+					}),
+					"or",
+					expression,
+				);
 
 				// create a variable declaration for this call
 				return luau.create(luau.SyntaxKind.VariableDeclaration, {

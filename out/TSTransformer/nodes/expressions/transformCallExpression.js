@@ -52,11 +52,6 @@ function runCallMacro(macro, state, node, expression, nodeArguments) {
                 right: spread,
             }));
         }
-        for (let i = 0; i < args.length; i++) {
-            if ((0, expressionMightMutate_1.expressionMightMutate)(state, args[i], nodeArguments[i])) {
-                args[i] = state.pushToVar(args[i], (0, valueToIdStr_1.valueToIdStr)(args[i]) || `arg${i}`);
-            }
-        }
     });
     let nodeExpression = node.expression;
     if (typescript_1.default.isPropertyAccessExpression(nodeExpression) || typescript_1.default.isElementAccessExpression(nodeExpression)) {

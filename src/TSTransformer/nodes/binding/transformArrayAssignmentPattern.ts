@@ -53,13 +53,13 @@ export function transformArrayAssignmentPattern(
 					state.prereq(transformInitializer(state, id, initializer));
 				}
 			} else if (ts.isArrayLiteralExpression(element)) {
-				const id = state.pushToVar(value, "binding");
+				const id = state.pushToVarIfNonId(value, "binding");
 				if (initializer) {
 					state.prereq(transformInitializer(state, id, initializer));
 				}
 				transformArrayAssignmentPattern(state, element, id);
 			} else if (ts.isObjectLiteralExpression(element)) {
-				const id = state.pushToVar(value, "binding");
+				const id = state.pushToVarIfNonId(value, "binding");
 				if (initializer) {
 					state.prereq(transformInitializer(state, id, initializer));
 				}

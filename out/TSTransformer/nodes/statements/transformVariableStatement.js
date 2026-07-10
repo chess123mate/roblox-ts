@@ -9,8 +9,8 @@ exports.isVarDeclaration = isVarDeclaration;
 exports.transformVariableDeclarationList = transformVariableDeclarationList;
 exports.transformVariableStatement = transformVariableStatement;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const diagnostics_1 = require("../../../shared/diagnostics");
-const assert_1 = require("../../../shared/util/assert");
+const diagnostics_1 = require("../../../Shared/diagnostics");
+const assert_1 = require("../../../Shared/util/assert");
 const DiagnosticService_1 = require("../../classes/DiagnosticService");
 const transformArrayBindingPattern_1 = require("../binding/transformArrayBindingPattern");
 const transformObjectBindingPattern_1 = require("../binding/transformObjectBindingPattern");
@@ -125,11 +125,11 @@ function transformVariableDeclaration(state, node) {
                 luau_ast_1.default.list.pushList(statements, transformOptimizedArrayBindingPattern(state, name, value.members));
             }
             else {
-                luau_ast_1.default.list.pushList(statements, state.capturePrereqs(() => (0, transformArrayBindingPattern_1.transformArrayBindingPattern)(state, name, state.pushToVar(value, "binding"))));
+                luau_ast_1.default.list.pushList(statements, state.capturePrereqs(() => (0, transformArrayBindingPattern_1.transformArrayBindingPattern)(state, name, state.pushToVarIfNonId(value, "binding"))));
             }
         }
         else {
-            luau_ast_1.default.list.pushList(statements, state.capturePrereqs(() => (0, transformObjectBindingPattern_1.transformObjectBindingPattern)(state, name, state.pushToVar(value, "binding"))));
+            luau_ast_1.default.list.pushList(statements, state.capturePrereqs(() => (0, transformObjectBindingPattern_1.transformObjectBindingPattern)(state, name, state.pushToVarIfNonId(value, "binding"))));
         }
     }
     return statements;

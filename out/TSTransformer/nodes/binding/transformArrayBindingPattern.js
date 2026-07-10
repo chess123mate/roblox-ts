@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformArrayBindingPattern = transformArrayBindingPattern;
-const diagnostics_1 = require("../../../shared/diagnostics");
+const diagnostics_1 = require("../../../Shared/diagnostics");
 const DiagnosticService_1 = require("../../classes/DiagnosticService");
 const transformObjectBindingPattern_1 = require("./transformObjectBindingPattern");
 const transformVariableStatement_1 = require("../statements/transformVariableStatement");
@@ -35,7 +35,7 @@ function transformArrayBindingPattern(state, bindingPattern, parentId) {
                 }
             }
             else {
-                const id = state.pushToVar(value, "binding");
+                const id = state.pushToVarIfNonId(value, "binding");
                 if (element.initializer) {
                     state.prereq((0, transformInitializer_1.transformInitializer)(state, id, element.initializer));
                 }

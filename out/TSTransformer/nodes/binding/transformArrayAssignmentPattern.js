@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformArrayAssignmentPattern = transformArrayAssignmentPattern;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const diagnostics_1 = require("../../../shared/diagnostics");
-const assert_1 = require("../../../shared/util/assert");
+const diagnostics_1 = require("../../../Shared/diagnostics");
+const assert_1 = require("../../../Shared/util/assert");
 const DiagnosticService_1 = require("../../classes/DiagnosticService");
 const transformObjectAssignmentPattern_1 = require("./transformObjectAssignmentPattern");
 const transformInitializer_1 = require("../transformInitializer");
@@ -47,14 +47,14 @@ function transformArrayAssignmentPattern(state, assignmentPattern, parentId) {
                 }
             }
             else if (typescript_1.default.isArrayLiteralExpression(element)) {
-                const id = state.pushToVar(value, "binding");
+                const id = state.pushToVarIfNonId(value, "binding");
                 if (initializer) {
                     state.prereq((0, transformInitializer_1.transformInitializer)(state, id, initializer));
                 }
                 transformArrayAssignmentPattern(state, element, id);
             }
             else if (typescript_1.default.isObjectLiteralExpression(element)) {
-                const id = state.pushToVar(value, "binding");
+                const id = state.pushToVarIfNonId(value, "binding");
                 if (initializer) {
                     state.prereq((0, transformInitializer_1.transformInitializer)(state, id, initializer));
                 }

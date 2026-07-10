@@ -68,14 +68,14 @@ export function transformObjectAssignmentPattern(
 					state.prereq(transformInitializer(state, id, initializer));
 				}
 			} else if (ts.isArrayLiteralExpression(init)) {
-				const id = state.pushToVar(value, "binding");
+				const id = state.pushToVarIfNonId(value, "binding");
 				if (initializer) {
 					state.prereq(transformInitializer(state, id, initializer));
 				}
 				assert(ts.isIdentifier(name));
 				transformArrayAssignmentPattern(state, init, id);
 			} else if (ts.isObjectLiteralExpression(init)) {
-				const id = state.pushToVar(value, "binding");
+				const id = state.pushToVarIfNonId(value, "binding");
 				if (initializer) {
 					state.prereq(transformInitializer(state, id, initializer));
 				}

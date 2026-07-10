@@ -165,6 +165,10 @@ class TransformState {
                     });
                 }
                 expression = luau_ast_1.default.call(luau_ast_1.default.globals.require, [expression]);
+                expression = luau_ast_1.default.binary(luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.ComputedIndexExpression, {
+                    expression: luau_ast_1.default.globals._G,
+                    index: luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.StringLiteral, { value: "__TS" }),
+                }), "or", expression);
                 return luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.VariableDeclaration, {
                     left: luau_ast_1.default.globals.TS,
                     right: expression,

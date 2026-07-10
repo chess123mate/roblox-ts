@@ -62,12 +62,14 @@ function runCallMacro(
 				}),
 			);
 		}
-
-		for (let i = 0; i < args.length; i++) {
-			if (expressionMightMutate(state, args[i], nodeArguments[i])) {
-				args[i] = state.pushToVar(args[i], valueToIdStr(args[i]) || `arg${i}`);
-			}
-		}
+		// The following is sisabled because we don't care about evaluation order
+		// 	even if we did, if only 1 arg mutates, it shouldn't bind!
+		// 	also, single variables/parameters don't mutate (but `typeIs(arg, "string")` thinks that `arg` does)
+		// for (let i = 0; i < args.length; i++) {
+		// 	if (expressionMightMutate(state, args[i], nodeArguments[i])) {
+		// 		args[i] = state.pushToVar(args[i], valueToIdStr(args[i]) || `arg${i}`);
+		// 	}
+		// }
 	});
 
 	let nodeExpression = node.expression;

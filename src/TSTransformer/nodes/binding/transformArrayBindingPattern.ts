@@ -35,7 +35,7 @@ export function transformArrayBindingPattern(
 					state.prereq(transformInitializer(state, id, element.initializer));
 				}
 			} else {
-				const id = state.pushToVar(value, "binding");
+				const id = state.pushToVarIfNonId(value, "binding");
 				if (element.initializer) {
 					state.prereq(transformInitializer(state, id, element.initializer));
 				}

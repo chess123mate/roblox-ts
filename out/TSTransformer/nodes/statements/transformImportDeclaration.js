@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformImportDeclaration = transformImportDeclaration;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const Lazy_1 = require("../../../shared/classes/Lazy");
-const assert_1 = require("../../../shared/util/assert");
+const Lazy_1 = require("../../../Shared/classes/Lazy");
+const assert_1 = require("../../../Shared/util/assert");
 const transformVariableStatement_1 = require("./transformVariableStatement");
 const cleanModuleName_1 = require("../../util/cleanModuleName");
 const createImportExpression_1 = require("../../util/createImportExpression");

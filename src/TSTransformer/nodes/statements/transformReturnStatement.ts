@@ -5,7 +5,7 @@ import { ensureTransformOrder } from "TSTransformer/util/ensureTransformOrder";
 import { isReturnBlockedByTryStatement } from "TSTransformer/util/isBlockedByTryStatement";
 import { skipDownwards } from "TSTransformer/util/traversal";
 import { getFirstDefinedSymbol, isLuaTupleType } from "TSTransformer/util/types";
-import ts from "typescript";
+import ts, { CallExpression } from "typescript";
 
 function isTupleReturningCall(state: TransformState, tsExpression: ts.Expression, luaExpression: luau.Expression) {
 	// intentionally NOT using state.getType() here, because that uses skipUpwards
@@ -16,6 +16,7 @@ function isTupleReturningCall(state: TransformState, tsExpression: ts.Expression
 }
 
 function isTupleMacro(state: TransformState, expression: ts.Expression) {
+	expression = skipDownwards(expression);
 	if (ts.isCallExpression(expression)) {
 		const symbol = getFirstDefinedSymbol(state, state.getType(expression.expression));
 		if (symbol && symbol === state.services.macroManager.getSymbolOrThrow(SYMBOL_NAMES.$tuple)) {
@@ -32,9 +33,9 @@ export function transformReturnStatementInner(
 	const result = luau.list.make<luau.Statement>();
 
 	let expression: luau.Expression | luau.List<luau.Expression>;
-
-	if (ts.isCallExpression(returnExp) && isTupleMacro(state, returnExp)) {
-		const [args, prereqs] = state.capture(() => ensureTransformOrder(state, returnExp.arguments));
+	if (isTupleMacro(state, returnExp)) {
+		const callExpr = skipDownwards(returnExp) as CallExpression; // guaranteed by isTupleMacro
+		const [args, prereqs] = state.capture(() => ensureTransformOrder(state, callExpr.arguments));
 		luau.list.pushList(result, prereqs);
 		expression = luau.list.make(...args);
 	} else {
@@ -43,7 +44,10 @@ export function transformReturnStatementInner(
 			if (luau.isArray(expression)) {
 				expression = expression.members;
 			} else {
-				expression = luau.call(luau.globals.unpack, [expression]);
+				// todo this `if` only partially solves the problem (so I've disabled the entire expression). If you're casting `return var as LuaTuple`, you shouldn't use unpack no matter what `var` is
+				// if (!luau.isSimplePrimitive(expression)) {
+				// 	expression = luau.call(luau.globals.unpack, [expression]);
+				// }
 			}
 		}
 	}

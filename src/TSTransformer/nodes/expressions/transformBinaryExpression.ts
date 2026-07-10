@@ -1,4 +1,5 @@
 import luau from "@roblox-ts/luau-ast";
+import { Expression } from "@roblox-ts/luau-ast/out/LuauAST/bundle";
 import { errors } from "Shared/diagnostics";
 import { assert } from "Shared/util/assert";
 import { TransformState } from "TSTransformer";
@@ -110,7 +111,7 @@ function transformOptimizedArrayAssignmentPattern(
 	state.prereqList(statements);
 }
 
-export function transformBinaryExpression(state: TransformState, node: ts.BinaryExpression) {
+export function transformBinaryExpression(state: TransformState, node: ts.BinaryExpression): Expression {
 	const operatorKind = node.operatorToken.kind;
 
 	validateNotAnyType(state, node.left);
@@ -166,7 +167,7 @@ export function transformBinaryExpression(state: TransformState, node: ts.Binary
 				return luau.none();
 			}
 
-			const parentId = state.pushToVar(rightExp, "binding");
+			const parentId = state.pushToVarIfNonId(rightExp, "binding");
 			transformArrayAssignmentPattern(state, node.left, parentId);
 			return parentId;
 		} else if (ts.isObjectLiteralExpression(node.left)) {
@@ -180,7 +181,7 @@ export function transformBinaryExpression(state: TransformState, node: ts.Binary
 				return rightExp;
 			}
 
-			const parentId = state.pushToVar(rightExp, "binding");
+			const parentId = state.pushToVarIfNonId(rightExp, "binding");
 			transformObjectAssignmentPattern(state, node.left, parentId);
 			return parentId;
 		}
