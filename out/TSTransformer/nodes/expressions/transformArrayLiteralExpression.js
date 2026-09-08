@@ -5,14 +5,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformArrayLiteralExpression = transformArrayLiteralExpression;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const assert_1 = require("../../../shared/util/assert");
+const assert_1 = require("../../../Shared/util/assert");
 const transformExpression_1 = require("./transformExpression");
+const transformSpreadElement_1 = require("./transformSpreadElement");
 const ensureTransformOrder_1 = require("../../util/ensureTransformOrder");
 const getAddIterableToArrayBuilder_1 = require("../../util/getAddIterableToArrayBuilder");
 const pointer_1 = require("../../util/pointer");
+const varArgsOptimization_1 = require("../../util/varArgsOptimization");
 const typescript_1 = __importDefault(require("typescript"));
 function transformArrayLiteralExpression(state, node) {
-    if (!node.elements.find(element => typescript_1.default.isSpreadElement(element))) {
+    var _a;
+    const index = node.elements.findIndex(typescript_1.default.isSpreadElement);
+    if (index === -1 || index === node.elements.length - 1) {
         return luau_ast_1.default.array((0, ensureTransformOrder_1.ensureTransformOrder)(state, node.elements));
     }
     const ptr = (0, pointer_1.createArrayPointer)("array");
@@ -41,15 +45,45 @@ function transformArrayLiteralExpression(state, node) {
         const element = node.elements[i];
         if (typescript_1.default.isSpreadElement(element)) {
             if (luau_ast_1.default.isArray(ptr.value)) {
+                const expression = (0, transformSpreadElement_1.transformSpreadElementNoCheck)(state, element);
+                luau_ast_1.default.list.push(ptr.value.members, expression);
                 (0, pointer_1.disableArrayInline)(state, ptr);
                 updateLengthId();
+                continue;
             }
             (0, assert_1.assert)(luau_ast_1.default.isAnyIdentifier(ptr.value));
-            const type = state.getType(element.expression);
-            const addIterableToArrayBuilder = (0, getAddIterableToArrayBuilder_1.getAddIterableToArrayBuilder)(state, element.expression, type);
-            const spreadExp = (0, transformExpression_1.transformExpression)(state, element.expression);
-            const shouldUpdateLengthId = i < node.elements.length - 1;
-            state.prereqList(addIterableToArrayBuilder(state, spreadExp, ptr.value, lengthId, amtElementsSinceUpdate, shouldUpdateLengthId));
+            const varArgsData = state.getOptimizableVarArgsData(element.expression);
+            if (varArgsData) {
+                let index = luau_ast_1.default.binary(lengthId, "+", luau_ast_1.default.id("i"));
+                if (amtElementsSinceUpdate > 0) {
+                    index = luau_ast_1.default.binary(index, "+", luau_ast_1.default.number(amtElementsSinceUpdate));
+                }
+                const inner = luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.Assignment, {
+                    left: luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.ComputedIndexExpression, {
+                        expression: ptr.value,
+                        index,
+                    }),
+                    operator: "=",
+                    right: luau_ast_1.default.call(luau_ast_1.default.globals.select, [luau_ast_1.default.id("i"), varArgsOptimization_1.varArgsLiteral]),
+                });
+                state.prereq(luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.NumericForStatement, {
+                    id: luau_ast_1.default.id("i"),
+                    start: luau_ast_1.default.number(1),
+                    step: undefined,
+                    end: (_a = varArgsData.lengthId) !== null && _a !== void 0 ? _a : varArgsOptimization_1.selectLengthCall,
+                    statements: luau_ast_1.default.list.make(inner),
+                }));
+                if (i < node.elements.length - 1) {
+                    updateLengthId();
+                }
+            }
+            else {
+                const type = state.getType(element.expression);
+                const addIterableToArrayBuilder = (0, getAddIterableToArrayBuilder_1.getAddIterableToArrayBuilder)(state, element.expression, type);
+                const spreadExp = (0, transformExpression_1.transformExpression)(state, element.expression);
+                const shouldUpdateLengthId = i < node.elements.length - 1;
+                state.prereqList(addIterableToArrayBuilder(state, spreadExp, ptr.value, lengthId, amtElementsSinceUpdate, shouldUpdateLengthId));
+            }
         }
         else {
             const [expression, prereqs] = state.capture(() => (0, transformExpression_1.transformExpression)(state, element));

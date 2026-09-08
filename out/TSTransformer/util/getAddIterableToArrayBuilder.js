@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAddIterableToArrayBuilder = getAddIterableToArrayBuilder;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const diagnostics_1 = require("../../shared/diagnostics");
-const assert_1 = require("../../shared/util/assert");
+const diagnostics_1 = require("../../Shared/diagnostics");
+const assert_1 = require("../../Shared/util/assert");
 const DiagnosticService_1 = require("../classes/DiagnosticService");
 const convertToIndexableExpression_1 = require("./convertToIndexableExpression");
 const types_1 = require("./types");

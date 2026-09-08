@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.selectLengthCall = void 0;
+exports.selectLengthCall = exports.varArgsLiteral = void 0;
 exports.analyzeVarArgsOptimization = analyzeVarArgsOptimization;
 exports.handleVarArgsParameterOptimization = handleVarArgsParameterOptimization;
 exports.tryHandleVarArgsCallMacro = tryHandleVarArgsCallMacro;
@@ -70,11 +70,17 @@ function analyzeVarArgsOptimization(state, body, parameter, paramId) {
         if (numShadows > 0) {
             return false;
         }
-        if (shadowedStack.length > 0 || tryDepth > 0) {
+        return true;
+    }
+    function isSafe_modify() {
+        if ((shadowedStack.length > 0 && numShadows === 0) || tryDepth > 0) {
             unsafe = true;
             return false;
         }
         return true;
+    }
+    function isIdentifierSafeVarArgs(identifier) {
+        return isIdentifierVarArgs(identifier) && isSafe_modify();
     }
     let sizeAccesses = 0;
     let unsafe = false;
@@ -82,7 +88,7 @@ function analyzeVarArgsOptimization(state, body, parameter, paramId) {
         if (unsafe)
             return;
         if (typescript_1.default.isIdentifier(node)) {
-            if (!isIdentifierVarArgs(node)) {
+            if (!isIdentifierSafeVarArgs(node)) {
                 return;
             }
             if (typescript_1.default.isAssignmentTarget((0, traversal_1.skipUpwards)(node))) {
@@ -118,7 +124,7 @@ function analyzeVarArgsOptimization(state, body, parameter, paramId) {
         }
         else if (typescript_1.default.isPropertyAccessExpression(node)) {
             const expression = (0, traversal_1.skipDownwards)(node.expression);
-            if (!typescript_1.default.isIdentifier(expression) || !isIdentifierVarArgs(expression)) {
+            if (!typescript_1.default.isIdentifier(expression) || !isIdentifierSafeVarArgs(expression)) {
                 node.forEachChild(visit);
                 return;
             }
@@ -136,7 +142,7 @@ function analyzeVarArgsOptimization(state, body, parameter, paramId) {
         }
         else if (typescript_1.default.isElementAccessExpression(node)) {
             const expression = (0, traversal_1.skipDownwards)(node.expression);
-            if (!typescript_1.default.isIdentifier(expression) || !isIdentifierVarArgs(expression)) {
+            if (!typescript_1.default.isIdentifier(expression) || !isIdentifierSafeVarArgs(expression)) {
                 node.forEachChild(visit);
                 return;
             }
@@ -168,6 +174,24 @@ function analyzeVarArgsOptimization(state, body, parameter, paramId) {
             node.forEachChild(visit);
             tryDepth--;
         }
+        else if (typescript_1.default.isArrayLiteralExpression(node)) {
+            let seenSpread = false;
+            for (const e of node.elements) {
+                if (typescript_1.default.isSpreadElement(e)) {
+                    const expression = (0, traversal_1.skipDownwards)(e.expression);
+                    if (typescript_1.default.isIdentifier(expression) && isIdentifierVarArgs(expression)) {
+                        if (!isSafe_modify())
+                            return;
+                        if (!seenSpread) {
+                            seenSpread = true;
+                        }
+                        else {
+                            sizeAccesses++;
+                        }
+                    }
+                }
+            }
+        }
         else {
             node.forEachChild(visit);
         }
@@ -181,10 +205,10 @@ function analyzeVarArgsOptimization(state, body, parameter, paramId) {
         useLengthVar: sizeAccesses > 1,
     };
 }
-const varArgsLiteral = luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.VarArgsLiteral, {});
-exports.selectLengthCall = luau_ast_1.default.call(luau_ast_1.default.globals.select, [luau_ast_1.default.string("#"), varArgsLiteral]);
+exports.varArgsLiteral = luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.VarArgsLiteral, {});
+exports.selectLengthCall = luau_ast_1.default.call(luau_ast_1.default.globals.select, [luau_ast_1.default.string("#"), exports.varArgsLiteral]);
 const selectArg0 = luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.ParenthesizedExpression, {
-    expression: varArgsLiteral,
+    expression: exports.varArgsLiteral,
 });
 const oneLiteral = luau_ast_1.default.number(1);
 function handleVarArgsParameterOptimization(statements, varArgs, paramId) {
@@ -234,15 +258,15 @@ function tryHandleVarArgsIndexableExpression(state, node, index) {
         argsIndex = (0, offset_1.offset)(index, 1);
     }
     return luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.ParenthesizedExpression, {
-        expression: luau_ast_1.default.call(luau_ast_1.default.globals.select, [argsIndex, varArgsLiteral]),
+        expression: luau_ast_1.default.call(luau_ast_1.default.globals.select, [argsIndex, exports.varArgsLiteral]),
     });
 }
 function tryHandleVarArgsArraySpread(state, node) {
     const varArgs = state.getOptimizableVarArgsData(node.expression);
-    return varArgs ? varArgsLiteral : undefined;
+    return varArgs ? exports.varArgsLiteral : undefined;
 }
 function varArgsForOfGetFirstStatementValue(indexId) {
-    return luau_ast_1.default.call(luau_ast_1.default.globals.select, [indexId, varArgsLiteral]);
+    return luau_ast_1.default.call(luau_ast_1.default.globals.select, [indexId, exports.varArgsLiteral]);
 }
 function transformVarArgsForOfResult(state, node, result) {
     var _a;
@@ -267,7 +291,7 @@ function transformVarArgsForOfResult(state, node, result) {
     const statements = forNode.statements;
     luau_ast_1.default.list.unshift(statements, luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.VariableDeclaration, {
         left: valueId,
-        right: luau_ast_1.default.call(luau_ast_1.default.globals.select, [indexId, varArgsLiteral]),
+        right: luau_ast_1.default.call(luau_ast_1.default.globals.select, [indexId, exports.varArgsLiteral]),
     }));
     Object.assign(lNode.value, luau_ast_1.default.create(luau_ast_1.default.SyntaxKind.NumericForStatement, {
         id: indexId,

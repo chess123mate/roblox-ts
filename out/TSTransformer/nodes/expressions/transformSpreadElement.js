@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformSpreadElement = transformSpreadElement;
+exports.transformSpreadElementNoCheck = transformSpreadElementNoCheck;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
 const diagnostics_1 = require("../../../Shared/diagnostics");
 const assert_1 = require("../../../Shared/util/assert");
@@ -25,12 +26,16 @@ function simplifyUnpackOfArray(expression) {
     }
 }
 function transformSpreadElement(state, node) {
-    var _a, _b;
     (0, validateNotAny_1.validateNotAnyType)(state, node.expression);
-    (0, assert_1.assert)(!typescript_1.default.isArrayLiteralExpression(node.parent) && node.parent.arguments);
-    if (node.parent.arguments[node.parent.arguments.length - 1] !== node) {
+    const list = typescript_1.default.isArrayLiteralExpression(node.parent) ? node.parent.elements : node.parent.arguments;
+    (0, assert_1.assert)(list);
+    if (list[list.length - 1] !== node) {
         DiagnosticService_1.DiagnosticService.addDiagnostic(diagnostics_1.errors.noPrecedingSpreadElement(node));
     }
+    return transformSpreadElementNoCheck(state, node);
+}
+function transformSpreadElementNoCheck(state, node) {
+    var _a, _b;
     const expression = (0, transformExpression_1.transformExpression)(state, node.expression);
     const type = state.getType(node.expression);
     if ((0, types_1.isDefinitelyType)(type, (0, types_1.isArrayType)(state))) {

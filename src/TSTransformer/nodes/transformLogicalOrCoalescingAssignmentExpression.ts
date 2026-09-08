@@ -4,8 +4,8 @@ import { TransformState } from "TSTransformer/classes/TransformState";
 import { transformExpression } from "TSTransformer/nodes/expressions/transformExpression";
 import { transformWritableExpression } from "TSTransformer/nodes/transformWritable";
 import { createTruthinessChecks } from "TSTransformer/util/createTruthinessChecks";
-import { isPossiblyType, isBooleanLiteralType } from "TSTransformer/util/types";
-import ts, { isIdentifier } from "typescript";
+import { isBooleanLiteralType, isPossiblyType } from "TSTransformer/util/types";
+import ts from "typescript";
 
 /** Returns an expression if optimization occurred (in which case nothing further to be done) */
 function optimizedExpression(
@@ -40,7 +40,7 @@ function transformCoalescingAssignmentExpression(
 	const [value, valuePreqreqs] = state.capture(() => transformExpression(state, right));
 
 	// Only consider optimization if left is a non-boolean variable
-	if (isIdentifier(left) && !isPossiblyType(state.getType(left), isBooleanLiteralType(state, false))) {
+	if (ts.isIdentifier(left) && !isPossiblyType(state.getType(left), isBooleanLiteralType(state, false))) {
 		const optimized = optimizedExpression(state, writable, value, "or");
 		if (optimized) return optimized;
 	}
