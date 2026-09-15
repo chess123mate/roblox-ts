@@ -114,8 +114,8 @@ function transformVariableDeclaration(state, node) {
             return statements;
         }
         if (typescript_1.default.isArrayBindingPattern(name)) {
-            if (luau_ast_1.default.isCall(value) &&
-                (0, types_1.isLuaTupleType)(state)(state.getType(node.initializer)) &&
+            const initializerType = state.getType(node.initializer);
+            if (((luau_ast_1.default.isCall(value) && (0, types_1.isLuaTupleType)(state)(initializerType)) || (0, types_1.isAnyType)(state)(initializerType)) &&
                 !(0, arrayBindingPatternContainsHoists_1.arrayBindingPatternContainsHoists)(state, name)) {
                 luau_ast_1.default.list.pushList(statements, transformOptimizedArrayBindingPattern(state, name, value));
             }

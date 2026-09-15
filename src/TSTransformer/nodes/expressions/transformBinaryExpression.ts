@@ -24,6 +24,7 @@ import { getKindName } from "TSTransformer/util/getKindName";
 import { isUsedAsStatement } from "TSTransformer/util/isUsedAsStatement";
 import { skipDownwards } from "TSTransformer/util/traversal";
 import {
+	isAnyType,
 	isDefinitelyType,
 	isLuaTupleType,
 	isNumberType,
@@ -154,7 +155,10 @@ export function transformBinaryExpression(state: TransformState, node: ts.Binary
 				return rightExp;
 			}
 
-			if (luau.isCall(rightExp) && isLuaTupleType(state)(state.getType(node.right))) {
+			if (
+				luau.isCall(rightExp) &&
+				(isLuaTupleType(state)(state.getType(node.right)) || isAnyType(state)(state.getType(node.right)))
+			) {
 				transformOptimizedArrayAssignmentPattern(state, node.left, rightExp);
 				if (!isUsedAsStatement(node)) {
 					DiagnosticService.addDiagnostic(errors.noLuaTupleDestructureAssignmentExpression(node));

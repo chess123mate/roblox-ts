@@ -11,7 +11,7 @@ import { transformInitializer } from "TSTransformer/nodes/transformInitializer";
 import { arrayBindingPatternContainsHoists } from "TSTransformer/util/arrayBindingPatternContainsHoists";
 import { checkVariableHoist } from "TSTransformer/util/checkVariableHoist";
 import { isSymbolMutable } from "TSTransformer/util/isSymbolMutable";
-import { isLuaTupleType } from "TSTransformer/util/types";
+import { isAnyType, isLuaTupleType } from "TSTransformer/util/types";
 import { validateIdentifier } from "TSTransformer/util/validateIdentifier";
 import { wrapExpressionStatement } from "TSTransformer/util/wrapExpressionStatement";
 import ts from "typescript";
@@ -133,9 +133,9 @@ export function transformVariableDeclaration(
 		}
 
 		if (ts.isArrayBindingPattern(name)) {
+			const initializerType = state.getType(node.initializer);
 			if (
-				luau.isCall(value) &&
-				isLuaTupleType(state)(state.getType(node.initializer)) &&
+				((luau.isCall(value) && isLuaTupleType(state)(initializerType)) || isAnyType(state)(initializerType)) &&
 				!arrayBindingPatternContainsHoists(state, name)
 			) {
 				luau.list.pushList(statements, transformOptimizedArrayBindingPattern(state, name, value));

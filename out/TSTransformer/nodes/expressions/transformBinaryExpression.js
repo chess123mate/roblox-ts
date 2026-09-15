@@ -114,7 +114,8 @@ function transformBinaryExpression(state, node) {
                 }
                 return rightExp;
             }
-            if (luau_ast_1.default.isCall(rightExp) && (0, types_1.isLuaTupleType)(state)(state.getType(node.right))) {
+            if (luau_ast_1.default.isCall(rightExp) &&
+                ((0, types_1.isLuaTupleType)(state)(state.getType(node.right)) || (0, types_1.isAnyType)(state)(state.getType(node.right)))) {
                 transformOptimizedArrayAssignmentPattern(state, node.left, rightExp);
                 if (!(0, isUsedAsStatement_1.isUsedAsStatement)(node)) {
                     DiagnosticService_1.DiagnosticService.addDiagnostic(diagnostics_1.errors.noLuaTupleDestructureAssignmentExpression(node));
