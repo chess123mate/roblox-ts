@@ -12,6 +12,7 @@ export declare function isNumberLiteralType(value: number): TypeCheck;
 export declare function isNaNType(type: ts.Type): boolean;
 export declare function isStringType(type: ts.Type): boolean;
 export declare function isArrayType(state: TransformState): TypeCheck;
+export declare function isReadonlyType(state: TransformState): TypeCheck;
 export declare function isSetType(state: TransformState): TypeCheck;
 export declare function isMapType(state: TransformState): TypeCheck;
 export declare function isGeneratorType(state: TransformState): TypeCheck;

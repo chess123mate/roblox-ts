@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MacroManager = exports.NOMINAL_LUA_TUPLE_NAME = exports.SYMBOL_NAMES = void 0;
-const ProjectError_1 = require("../../shared/errors/ProjectError");
-const assert_1 = require("../../shared/util/assert");
+const ProjectError_1 = require("../../Shared/errors/ProjectError");
+const assert_1 = require("../../Shared/util/assert");
 const callMacros_1 = require("../macros/callMacros");
 const constructorMacros_1 = require("../macros/constructorMacros");
 const identifierMacros_1 = require("../macros/identifierMacros");
@@ -31,6 +31,7 @@ exports.SYMBOL_NAMES = {
     LuaTuple: "LuaTuple",
     Map: "Map",
     Object: "Object",
+    Readonly: "Readonly",
     ReadonlyArray: "ReadonlyArray",
     ReadonlyMap: "ReadonlyMap",
     ReadonlySet: "ReadonlySet",

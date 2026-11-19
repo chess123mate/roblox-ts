@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformLogical = transformLogical;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const assert_1 = require("../../shared/util/assert");
+const assert_1 = require("../../Shared/util/assert");
 const transformExpression_1 = require("./expressions/transformExpression");
 const createTruthinessChecks_1 = require("../util/createTruthinessChecks");
 const expressionChain_1 = require("../util/expressionChain");

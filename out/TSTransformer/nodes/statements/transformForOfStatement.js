@@ -319,6 +319,9 @@ function getLoopBuilder(state, node, type) {
     else if ((0, types_1.isDefinitelyType)(type, (0, types_1.isGeneratorType)(state))) {
         return buildGeneratorLoop;
     }
+    else if ((0, types_1.isDefinitelyType)(type, (0, types_1.isReadonlyType)(state))) {
+        return getLoopBuilder(state, node, type.aliasTypeArguments[0]);
+    }
     else if ((0, types_1.isDefinitelyType)(type, (0, types_1.isIterableType)(state))) {
         DiagnosticService_1.DiagnosticService.addDiagnostic(diagnostics_1.errors.noIterableIteration(node));
         return () => luau_ast_1.default.list.make();

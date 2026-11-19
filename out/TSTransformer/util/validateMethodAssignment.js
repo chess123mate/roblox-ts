@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateMethodAssignment = validateMethodAssignment;
-const diagnostics_1 = require("../../shared/diagnostics");
+const diagnostics_1 = require("../../Shared/diagnostics");
 const DiagnosticService_1 = require("../classes/DiagnosticService");
 const isMethod_1 = require("./isMethod");
 const types_1 = require("./types");

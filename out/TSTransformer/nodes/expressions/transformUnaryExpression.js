@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.transformPostfixUnaryExpression = transformPostfixUnaryExpression;
 exports.transformPrefixUnaryExpression = transformPrefixUnaryExpression;
 const luau_ast_1 = __importDefault(require("@roblox-ts/luau-ast"));
-const diagnostics_1 = require("../../../shared/diagnostics");
+const diagnostics_1 = require("../../../Shared/diagnostics");
 const DiagnosticService_1 = require("../../classes/DiagnosticService");
 const transformExpression_1 = require("./transformExpression");
 const transformWritable_1 = require("../transformWritable");

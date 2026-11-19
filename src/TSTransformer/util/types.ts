@@ -136,6 +136,10 @@ export function isArrayType(state: TransformState): TypeCheck {
 	};
 }
 
+export function isReadonlyType(state: TransformState): TypeCheck {
+	return type => type.aliasSymbol === state.services.macroManager.getSymbolOrThrow(SYMBOL_NAMES.Readonly);
+}
+
 export function isSetType(state: TransformState): TypeCheck {
 	return type =>
 		type.symbol === state.services.macroManager.getSymbolOrThrow(SYMBOL_NAMES.Set) ||

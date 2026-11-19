@@ -31,6 +31,7 @@ export const SYMBOL_NAMES = {
 	LuaTuple: "LuaTuple",
 	Map: "Map",
 	Object: "Object",
+	Readonly: "Readonly",
 	ReadonlyArray: "ReadonlyArray",
 	ReadonlyMap: "ReadonlyMap",
 	ReadonlySet: "ReadonlySet",

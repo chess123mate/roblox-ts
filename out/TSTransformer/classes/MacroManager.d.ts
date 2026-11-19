@@ -15,6 +15,7 @@ export declare const SYMBOL_NAMES: {
     readonly LuaTuple: "LuaTuple";
     readonly Map: "Map";
     readonly Object: "Object";
+    readonly Readonly: "Readonly";
     readonly ReadonlyArray: "ReadonlyArray";
     readonly ReadonlyMap: "ReadonlyMap";
     readonly ReadonlySet: "ReadonlySet";

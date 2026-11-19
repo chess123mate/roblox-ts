@@ -24,6 +24,7 @@ import {
 	isIterableFunctionType,
 	isIterableType,
 	isMapType,
+	isReadonlyType,
 	isSetType,
 	isStringType,
 } from "TSTransformer/util/types";
@@ -427,6 +428,8 @@ function getLoopBuilder(state: TransformState, node: ts.Node, type: ts.Type): Lo
 		return buildIterableFunctionLoop;
 	} else if (isDefinitelyType(type, isGeneratorType(state))) {
 		return buildGeneratorLoop;
+	} else if (isDefinitelyType(type, isReadonlyType(state))) {
+		return getLoopBuilder(state, node, type.aliasTypeArguments![0]);
 	} else if (isDefinitelyType(type, isIterableType(state))) {
 		DiagnosticService.addDiagnostic(errors.noIterableIteration(node));
 		return () => luau.list.make();

@@ -14,6 +14,7 @@ exports.isNumberLiteralType = isNumberLiteralType;
 exports.isNaNType = isNaNType;
 exports.isStringType = isStringType;
 exports.isArrayType = isArrayType;
+exports.isReadonlyType = isReadonlyType;
 exports.isSetType = isSetType;
 exports.isMapType = isMapType;
 exports.isGeneratorType = isGeneratorType;
@@ -30,8 +31,8 @@ exports.getFirstConstructSymbol = getFirstConstructSymbol;
 exports.getFirstDefinedSymbol = getFirstDefinedSymbol;
 exports.getTypeArguments = getTypeArguments;
 const path_1 = __importDefault(require("path"));
-const constants_1 = require("../../shared/constants");
-const isPathDescendantOf_1 = require("../../shared/util/isPathDescendantOf");
+const constants_1 = require("../../Shared/constants");
+const isPathDescendantOf_1 = require("../../Shared/util/isPathDescendantOf");
 const TSTransformer_1 = require("..");
 const MacroManager_1 = require("../classes/MacroManager");
 const typeGuards_1 = require("../typeGuards");
@@ -144,6 +145,9 @@ function isArrayType(state) {
             type.symbol === state.services.macroManager.getSymbolOrThrow(TSTransformer_1.SYMBOL_NAMES.ReadVoxelsArray) ||
             type.symbol === state.services.macroManager.getSymbolOrThrow(TSTransformer_1.SYMBOL_NAMES.TemplateStringsArray));
     };
+}
+function isReadonlyType(state) {
+    return type => type.aliasSymbol === state.services.macroManager.getSymbolOrThrow(TSTransformer_1.SYMBOL_NAMES.Readonly);
 }
 function isSetType(state) {
     return type => type.symbol === state.services.macroManager.getSymbolOrThrow(TSTransformer_1.SYMBOL_NAMES.Set) ||
